@@ -4,47 +4,42 @@ import (
 	"fmt"
 )
 
-func main() {
-	fmt.Println("Hello World")
-	sum(3, 5)
-
-	// for文
-	for i := 0; i < 10; i++ {
-		fmt.Println(i)
-	}
-
-	// while文
-	n := 0
-	for n < 10 {
-		fmt.Println(n)
-	}
-
-	// 無限ループとbreakとcontinue
-	n = 0
-	for {
-		n++
-		if n < 10 {
-			break
-		}
-		if n%2 == 0 {
-			continue
-		}
-		fmt.Print(n)
-	}
-
-	// switch。fallthroughで次のcaseへまたぐ。
-	n = 10
-	switch n {
-	case 5:
-		fmt.Println("hoge")
-	case 10, 15:
-		fmt.Println("fuga")
-		fallthrough
-	case 20, 25:
-		fmt.Println("piyo")
-	}
+type Person struct {
+	Name string
+	Age  int
 }
 
-func sum(x, y int) int {
-	return x + y
+func main() {
+	// アドレスとポインタについて
+	var hoge int = 5
+	var hoge2 *int = &hoge
+	var hoge3 int = *hoge2
+	// &をつけるとアドレスを取得。
+	// &をつけてアドレスを取得した変数の型は「*」をつけて表す。この型をポインタ型という。
+	fmt.Println(hoge2)
+	fmt.Println(hoge3)
+
+	// 最初
+	p := Person{
+		Name: "太郎",
+		Age:  20,
+	}
+	fmt.Printf("最初のp :%+v\n", p)
+
+	// 二番目
+	p2 := p // こいつ…値のコピーをしてやがる（Javaとは違う）
+	p2.Name = "次郎"
+	p2.Age = 21
+	fmt.Printf("次のp2 :%+v\n", p2)
+
+	fmt.Printf("　最初のp :%+v\n", p)
+
+	// 3番目
+	p3 := &p //変数のアドレスを取得
+	p3.Name = "三郎"
+	p3.Age = 22
+	fmt.Printf("3つめp3 :%+v\n", p3)
+
+	fmt.Printf("　最初のp :%+v\n", p)
+
 }
