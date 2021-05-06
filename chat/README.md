@@ -1,2 +1,0 @@
-go build -o chat
-./chat

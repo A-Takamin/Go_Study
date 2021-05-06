@@ -1,9 +1,12 @@
 package main
 
 import (
+	"flag"
+	"go_study/trace"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sync"
 )
@@ -19,7 +22,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
-	t.templ.Execute(w, nil)
+	t.templ.Execute(w, r)
 }
 
 /**
@@ -27,12 +30,18 @@ main関数が呼ばれたらサーバがスタートするだけ。
 "/"にアクセスすると、chat.htmlを返す。
 */
 func main() {
+	// flagはコマンドラインの引数に関するパッケージ
+	var addr = flag.String("addr", ":8080", "アプリケーションのアドレス")
+	flag.Parse() //フラグを解釈する。デフォルトは8080。
 	r := newRoom()
+	r.tracer = trace.New(os.Stdout)
+
 	http.Handle("/", &templateHandler{filename: "chat.html"})
 	http.Handle("/room", r)
 	// チャットルームを開始します。バックグラウンドで。
 	go r.run()
 	// webサーバの開始
+	log.Println("webサーバを起動します。ポート：", *addr)
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
